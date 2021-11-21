@@ -1,6 +1,5 @@
 """ Wide ResNet implementation from https://github.com/xternalz/WideResNet-pytorch """
 
-import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -80,7 +79,17 @@ class WideResNet(nn.Module):
                 m.bias.data.zero_()
             elif isinstance(m, nn.Linear):
                 m.bias.data.zero_()
-
+                
+    @staticmethod
+    def get_classifiers():
+        return ['wrn-16-8', 'wrn-16-10', 'wrn-22-8', 'wrn-22-10', 'wrn-28-10', 'wrn-28-12']
+    
+    @classmethod
+    def build_classifier(cls, arch: str, num_classes: int, input_channels: int):
+        _, depth, widen_factor = arch.split('-')
+        cls_instance = cls(int(depth), num_classes, input_channels=input_channels, widen_factor=int(widen_factor))
+        return cls_instance
+        
     def forward(self, x):
         out = self.conv1(x)
         out = self.block1(out)

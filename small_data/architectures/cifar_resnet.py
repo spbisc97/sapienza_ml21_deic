@@ -1,10 +1,8 @@
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.nn.init as init
 from torchvision.models.resnet import BasicBlock
 
-__all__ = ['ResNet', 'resnet20', 'resnet32', 'resnet44', 'resnet56', 'resnet110', 'resnet1202']
 
 def _weights_init(m):
     if isinstance(m, nn.Linear) or isinstance(m, nn.Conv2d):
@@ -82,7 +80,25 @@ class ResNet(nn.Module):
 
         return nn.Sequential(*layers)
 
-
+    @staticmethod
+    def get_classifiers():
+        return ['rn20', 'rn32', 'rn44', 'rn56', 'rn110', 'rn1202']
+    
+    @classmethod
+    def build_classifier(cls, arch: str, num_classes: int, input_channels: int):
+        _, depth = arch.split('rn')
+        
+        CIFAR_RESNET_CONFIG = {20    : { 'block' : BasicBlock, 'layers' : [3, 3, 3] },
+                               32    : { 'block' : BasicBlock, 'layers' : [5, 5, 5] },
+                               44    : { 'block' : BasicBlock, 'layers' : [7, 7, 7] },
+                               56    : { 'block' : BasicBlock, 'layers' : [9, 9, 9] },
+                               101   : { 'block' : BasicBlock, 'layers' : [18, 18, 18] },
+                               1202  : { 'block' : BasicBlock, 'layers' : [200, 200, 200] },
+                               }
+                
+        cls_instance = cls(**CIFAR_RESNET_CONFIG[int(depth)], num_classes=num_classes, input_channels=input_channels)
+        return cls_instance
+    
     def forward(self, x):
 
         out = F.relu(self.bn1(self.conv1(x)))
@@ -92,27 +108,3 @@ class ResNet(nn.Module):
         out = F.adaptive_avg_pool2d(out, 1).flatten(1)
         out = self.fc(out)
         return out
-
-
-def resnet20(num_classes=10, input_channels=3):
-    return ResNet(BasicBlock, [3, 3, 3], num_classes=num_classes, input_channels=input_channels)
-
-
-def resnet32(num_classes=10, input_channels=3):
-    return ResNet(BasicBlock, [5, 5, 5], num_classes=num_classes, input_channels=input_channels)
-
-
-def resnet44(num_classes=10, input_channels=3):
-    return ResNet(BasicBlock, [7, 7, 7], num_classes=num_classes, input_channels=input_channels)
-
-
-def resnet56(num_classes=10, input_channels=3):
-    return ResNet(BasicBlock, [9, 9, 9], num_classes=num_classes, input_channels=input_channels)
-
-
-def resnet110(num_classes=10, input_channels=3):
-    return ResNet(BasicBlock, [18, 18, 18], num_classes=num_classes, input_channels=input_channels)
-
-
-def resnet1202(num_classes=10, input_channels=3):
-    return ResNet(BasicBlock, [200, 200, 200], num_classes=num_classes, input_channels=input_channels)

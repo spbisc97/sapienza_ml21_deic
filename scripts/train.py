@@ -106,7 +106,7 @@ if __name__ == '__main__':
     group = parser.add_argument_group('Model')
     group.add_argument('--method', type=str, choices=available_pipelines(), default='CrossEntropyClassifier',
                        help='The learning method/pipeline.')
-    group.add_argument('--architecture', type=str, default='rn50',
+    group.add_argument('--architecture', type=str, default='rn20',
                        help='Network architecture.')
     group.add_argument('--init-weights', type=str, default=None,
                        help='Path to a file containing model weights to be used as initialization.')
