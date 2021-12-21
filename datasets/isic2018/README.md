@@ -8,6 +8,22 @@ Paper: <https://arxiv.org/abs/1902.03368>
 ![Example images from ISIC 2018](example_images.png)
 
 
+## Splits
+
+The provided splits transform the seven-class classification problem into a two-class classification problem having limited data. More precisely, classes `MEL` and `BCC` are considered anomalous and the rest normal. The total number of training samples is 1000, roughly 1 order of magnitude smaller than the original size.
+We down-sampled original classes according to the original training distribution.
+Split `trainval2.txt` contains 16% of mislabeled normal samples that are actually abnormal to simulate a noisy labeling scenario.
+
+
+
+|   Split    | Total Images | Anomalous Images |
+|:---------- |-------------:|-----------------:|
+| train1/2   |          750 |             123  |
+| val1/2     |          250 |             41   |
+| trainval1/2|         1000 |             164  |
+| test       |       10,000 |            2124  |
+
+
 ## Usage
 
 This dataset can be loaded using `small_data.datasets.ISIC2018Dataset`.
