@@ -27,4 +27,4 @@ class ISIC2018Dataset(ImageClassificationDataset):
     @staticmethod
     def get_normalization_statistics():
 
-        return [0.7645281 0.5311958 0.5540829], [0.14080018 0.16115248 0.17958528]
+        return [0.7778883,  0.53917843, 0.5600745], [0.13092259, 0.15768562, 0.17565714]
