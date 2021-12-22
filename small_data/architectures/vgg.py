@@ -49,4 +49,3 @@ class VGG(nn.Module):
         return cls_instance
 
 
-# test()
