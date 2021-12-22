@@ -48,18 +48,22 @@ class ResNet(nn.Module):
         self.in_planes = 16
 
         if shortcut_downsampling not in ('pad', 'conv'):
-            raise ValueError(f'Invalid value for argument shortcut_downsampling: {shortcut_downsampling} (expected one of: pad, conv).')
+            raise ValueError(
+                f'Invalid value for argument shortcut_downsampling: {shortcut_downsampling} (expected one of: pad, conv).')
         self.shortcut_downsampling = shortcut_downsampling
 
-        self.conv1 = nn.Conv2d(input_channels, 16, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(
+            input_channels, 16, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(16)
-        self.layer1 = self._make_layer(block, 16, layers[0], stride=1, groups=groups)
-        self.layer2 = self._make_layer(block, 32, layers[1], stride=2, groups=groups)
-        self.layer3 = self._make_layer(block, 64, layers[2], stride=2, groups=groups)
+        self.layer1 = self._make_layer(
+            block, 16, layers[0], stride=1, groups=groups)
+        self.layer2 = self._make_layer(
+            block, 32, layers[1], stride=2, groups=groups)
+        self.layer3 = self._make_layer(
+            block, 64, layers[2], stride=2, groups=groups)
         self.fc = nn.Linear(64, num_classes)
 
         self.apply(_weights_init)
-
 
     def _make_layer(self, block, planes, num_blocks, stride, groups=1):
 
@@ -69,36 +73,41 @@ class ResNet(nn.Module):
                 downsample = PaddingDownsampling(block.expansion * planes)
             elif self.shortcut_downsampling == 'conv':
                 downsample = nn.Sequential(
-                     nn.Conv2d(self.in_planes, block.expansion * planes, kernel_size=1, stride=stride, bias=False),
-                     nn.BatchNorm2d(block.expansion * planes)
+                    nn.Conv2d(self.in_planes, block.expansion * planes,
+                              kernel_size=1, stride=stride, bias=False),
+                    nn.BatchNorm2d(block.expansion * planes)
                 )
 
-        layers = [block(self.in_planes, planes, stride=stride, downsample=downsample, groups=groups)]
+        layers = [block(self.in_planes, planes, stride=stride,
+                        downsample=downsample, groups=groups)]
         self.in_planes = planes * block.expansion
         for _ in range(1, num_blocks):
-            layers.append(block(self.in_planes, planes, stride=1, groups=groups))
+            layers.append(block(self.in_planes, planes,
+                          stride=1, groups=groups))
 
         return nn.Sequential(*layers)
 
     @staticmethod
     def get_classifiers():
-        return ['rn20', 'rn32', 'rn44', 'rn56', 'rn110', 'rn1202']
-    
+        return ['rn18','rn20', 'rn32', 'rn44', 'rn56', 'rn101', 'rn1202']
+
     @classmethod
     def build_classifier(cls, arch: str, num_classes: int, input_channels: int):
         _, depth = arch.split('rn')
-        
-        CIFAR_RESNET_CONFIG = {20    : { 'block' : BasicBlock, 'layers' : [3, 3, 3] },
-                               32    : { 'block' : BasicBlock, 'layers' : [5, 5, 5] },
-                               44    : { 'block' : BasicBlock, 'layers' : [7, 7, 7] },
-                               56    : { 'block' : BasicBlock, 'layers' : [9, 9, 9] },
-                               101   : { 'block' : BasicBlock, 'layers' : [18, 18, 18] },
-                               1202  : { 'block' : BasicBlock, 'layers' : [200, 200, 200] },
+
+        CIFAR_RESNET_CONFIG = {18: {'block': BasicBlock, 'layers': [2, 2, 2, 2]},
+                               20: {'block': BasicBlock, 'layers': [3, 3, 3]},
+                               32: {'block': BasicBlock, 'layers': [5, 5, 5]},
+                               44: {'block': BasicBlock, 'layers': [7, 7, 7]},
+                               56: {'block': BasicBlock, 'layers': [9, 9, 9]},
+                               101: {'block': BasicBlock, 'layers': [18, 18, 18]},
+                               1202: {'block': BasicBlock, 'layers': [200, 200, 200]},
                                }
-                
-        cls_instance = cls(**CIFAR_RESNET_CONFIG[int(depth)], num_classes=num_classes, input_channels=input_channels)
+
+        cls_instance = cls(
+            **CIFAR_RESNET_CONFIG[int(depth)], num_classes=num_classes, input_channels=input_channels)
         return cls_instance
-    
+
     def forward(self, x):
 
         out = F.relu(self.bn1(self.conv1(x)))
