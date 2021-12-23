@@ -650,7 +650,7 @@ class BasicAugmentation(LearningMethod):
             test_transforms.append(norm_trans)
             
         if self.hparams['colorjitter']:
-            transforms.append(tf.ColorJitter(0.4, 0.4, 0.4, 0.4))
+            transforms.append(tf.ColorJitter(0.0, 0.4, 0.0, 0.0))
         
         
         return tf.Compose(transforms), tf.Compose(test_transforms)
