@@ -648,6 +648,10 @@ class BasicAugmentation(LearningMethod):
             norm_trans = tf.Normalize(channel_mean, channel_std)
             transforms.append(norm_trans)
             test_transforms.append(norm_trans)
+            
+        if self.hparams['colorjitter']:
+            transforms.append(tf.ColorJitter(0.4, 0.4, 0.4, 0.4))
+        
         
         return tf.Compose(transforms), tf.Compose(test_transforms)
 
@@ -717,7 +721,9 @@ class BasicAugmentation(LearningMethod):
             'max_scale' : 1.0,
             'rand_shift' : 0,
             'hflip' : True,
-            'vflip' : False
+            'vflip' : False,
+            'colorjitter': None
+            
         }
 
     
