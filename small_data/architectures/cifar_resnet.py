@@ -99,7 +99,7 @@ class ResNet(nn.Module):
                                20: {'block': BasicBlock, 'layers': [3, 3, 3]},
                                32: {'block': BasicBlock, 'layers': [5, 5, 5]},
                                44: {'block': BasicBlock, 'layers': [7, 7, 7]},
-                               50: {'block': Bottleneck, 'layers': [3, 4, 6, 3]},
+                               50: {'block': BasicBlock, 'layers': [3, 4, 6, 3]},
                                56: {'block': BasicBlock, 'layers': [9, 9, 9]},
                                101: {'block': BasicBlock, 'layers': [18, 18, 18]},
                                1202: {'block': BasicBlock, 'layers': [200, 200, 200]},
