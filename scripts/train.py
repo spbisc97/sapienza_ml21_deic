@@ -121,6 +121,8 @@ if __name__ == '__main__':
                        help='Maximum scaling ratio for scale agumentation.')
     group.add_argument('--rand-shift', type=int, default=0,
                        help='Maximum amount of random translation in pixels.')
+    group.add_argument('--colorjitter', '--no-colorjitter', dest='colorjitter', action=NegateAction, nargs=0, default=False,
+                       help='ColorjitterImages images using channel mean and standard deviation.')
     group.add_argument('--hflip', '--no-hflip', dest='hflip', action=NegateAction, nargs=0, default=True,
                        help='Toggle random horizontal flipping on/off.')
     group.add_argument('--vflip', '--no-vflip', dest='vflip', action=NegateAction, nargs=0, default=False,
