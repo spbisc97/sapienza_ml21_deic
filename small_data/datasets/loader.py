@@ -1,11 +1,13 @@
 from torchvision.datasets.vision import VisionDataset
 from .cifair import ciFAIR10
+from .isic import ISIC2018Dataset
 
 from typing import Optional, Callable
 
 
 DATASETS = {
-    'cifair10' : ciFAIR10
+    'cifair10' : ciFAIR10,
+    'isic2018' : ISIC2018Dataset
 }
 
 
